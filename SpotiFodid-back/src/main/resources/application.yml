@@ -1,0 +1,43 @@
+logging:
+  level:
+    ROOT: info
+    org.hibernate.SQL: DEBUG
+    fr.flow.SpotiFodid: DEBUG
+
+spring:
+  profiles:
+    active: dev
+  application:
+    name: spotifodid
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:postgresql://localhost:5432/postgres?currentSchema=spotifodid
+    username: postgres
+    password: 
+    hikari:
+      poolName: Hikari
+      auto-commit: false
+  data:
+    jpa:
+      repositories:
+        bootstrap-mode: deferred
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        default_schema: spotifodid
+  liquibase:
+    contexts: dev
+    change-log: classpath:db/changelog/master.xml
+    default-schema: spotifodid
+    enabled: true
+  #    drop-first: true
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 100MB
+      max-request-size: 100MB
+server:
+  port: 8080

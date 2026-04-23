@@ -1,0 +1,65 @@
+package fodid.SpotiFodid_back.catalogcontext.domain;
+
+import java.io.Serializable;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
+import jakarta.persistence.MapsId;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "song_content")
+public class SongContent implements Serializable {
+
+    @Id
+    @Column(name = "song_id")
+    private Long songId;
+
+    @MapsId
+    @OneToOne
+    @JoinColumn(name = "song_id", referencedColumnName = "id")
+    private Song song;
+
+    @Lob
+    @Column(name = "file", nullable = false)
+    private byte[] file;
+
+    @Column(name = "file_content_type", nullable = false)
+    private String fileContentType;
+
+    public Long getSongId() {
+        return songId;
+    }
+
+    public Song getSong() {
+        return song;
+    }
+
+    public byte[] getFile() {
+        return file;
+    }
+
+    public String getFileContentType() {
+        return fileContentType;
+    }
+
+    public void setSongId(Long songId) {
+        this.songId = songId;
+    }
+
+    public void setSong(Song song) {
+        this.song = song;
+    }
+
+    public void setFile(byte[] file) {
+        this.file = file;
+    }
+
+    public void setFileContentType(String fileContentType) {
+        this.fileContentType = fileContentType;
+    }
+}

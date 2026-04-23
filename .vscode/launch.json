@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-SpotiFodidBackApplication<SpotiFodid-back>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "fodid.SpotiFodid_back.SpotiFodidBackApplication",
+            "projectName": "SpotiFodid-back",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
