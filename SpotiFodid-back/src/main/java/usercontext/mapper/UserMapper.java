@@ -8,5 +8,5 @@ import usercontext.domain.User;
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
-    ReadUserDTO readUserDTO(User user);
+    ReadUserDTO readUserDTOToUser(User entity);
 }
