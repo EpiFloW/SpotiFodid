@@ -1,5 +1,6 @@
 package fodid.SpotiFodid_back.catalogcontext.application;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -15,6 +16,7 @@ import fodid.SpotiFodid_back.catalogcontext.domain.Song;
 import fodid.SpotiFodid_back.catalogcontext.domain.SongContent;
 import fodid.SpotiFodid_back.catalogcontext.repository.SongContentRepository;
 import fodid.SpotiFodid_back.catalogcontext.repository.SongRepository;
+import usercontext.application.UserService;
 
 @Service
 @Transactional
@@ -28,16 +30,15 @@ public class SongService {
 
     private final SongContentMapper songContentMapper;
 
-//    private final UserService userService;
+    private final UserService userService;
 
     public SongService(SongMapper songMapper, SongRepository songRepository,
-                       SongContentRepository songContentRepository, SongContentMapper songContentMapper) {
+                       SongContentRepository songContentRepository, SongContentMapper songContentMapper, UserService userService) {
         this.songMapper = songMapper;
         this.songRepository = songRepository;
         this.songContentRepository = songContentRepository;
         this.songContentMapper = songContentMapper;
-        //this.userService = userService;
-        //this.favoriteRepository = favoriteRepository;
+        this.userService = userService;
     }
 
     public ReadSongInfoDTO create(SaveSongDTO saveSongDTO) {
@@ -49,6 +50,17 @@ public class SongService {
 
         songContentRepository.save(songContent);
         return songMapper.songToReadSongInfoDTO(songSaved);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ReadSongInfoDTO> getAll() {
+
+        List<ReadSongInfoDTO> allSongs = songRepository.findAll()
+                .stream()
+                .map(songMapper::songToReadSongInfoDTO)
+                .toList();
+
+        return allSongs;
     }
 
     public Optional<SongContentDTO> getOneByPublicId(UUID publicId) {

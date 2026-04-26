@@ -1,5 +1,5 @@
-import {faUser, IconDefinition} from "@fortawesome/free-regular-svg-icons";
-import {faBook, faChevronLeft, faChevronRight, faCirclePlay, faHome, faPlus, faSearch} from "@fortawesome/free-solid-svg-icons";
+import {faCircleXmark, faUser, IconDefinition} from "@fortawesome/free-regular-svg-icons";
+import {faBook, faChevronLeft, faChevronRight, faCircleNotch, faCirclePlay, faHome, faPlus, faSearch} from "@fortawesome/free-solid-svg-icons";
 
 
 export const fontAwesomeIcons : IconDefinition[] = [
@@ -10,5 +10,7 @@ export const fontAwesomeIcons : IconDefinition[] = [
     faPlus,
     faChevronLeft,
     faChevronRight,
-    faUser
+    faUser,
+    faCircleNotch,
+    faCircleXmark
 ]

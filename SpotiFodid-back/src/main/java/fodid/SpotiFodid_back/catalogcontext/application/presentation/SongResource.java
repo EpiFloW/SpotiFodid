@@ -1,6 +1,7 @@
 package fodid.SpotiFodid_back.catalogcontext.application.presentation;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -8,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -21,6 +23,7 @@ import fodid.SpotiFodid_back.catalogcontext.application.dto.ReadSongInfoDTO;
 import fodid.SpotiFodid_back.catalogcontext.application.dto.SaveSongDTO;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
+import usercontext.application.UserService;
 
 @RestController
 @RequestMapping("/api")
@@ -29,14 +32,14 @@ public class SongResource {
 
     private final Validator validator;
 
-    //private final UserService userService;
+    private final UserService userService;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public SongResource(SongService songService, Validator validator/*, UserService userService*/) {
+    public SongResource(SongService songService, Validator validator, UserService userService) {
         this.songService = songService;
         this.validator = validator;
-        //this.userService = userService;
+        this.userService = userService;
     }
 
     @PostMapping(value = "/songs", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -59,5 +62,10 @@ public class SongResource {
         } else {
             return ResponseEntity.ok(songService.create(saveSongDTO));
         }
+    }
+
+    @GetMapping("/songs")
+    public ResponseEntity<List<ReadSongInfoDTO>> getAll() {
+        return ResponseEntity.ok(songService.getAll());
     }
 }
