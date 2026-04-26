@@ -10,6 +10,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
@@ -19,7 +20,7 @@ public class Song implements Serializable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "songSequenceGenerator")
-    @SequenceGenerator(name = "songSequenceGenerator", sequenceName = "song_sequence", allocationSize = 1)
+    @SequenceGenerator(name = "songSequenceGenerator", sequenceName = "song_generator", allocationSize = 1)
     @Column(name = "id")
     private Long id;
 
@@ -33,57 +34,58 @@ public class Song implements Serializable{
     @Column(name = "author", nullable = false)
     private String author;
 
+    @Lob
     @Column(name = "cover", nullable = false)
-    private String cover;
+    private byte[] cover;
 
     @Column(name = "cover_content_type", nullable = false)
-    private String coverContent;
+    private String coverContentType;
 
     public Long getId() {
         return id;
-    }
-
-    public UUID getPublicId() {
-        return publicId;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getAuthor() {
-        return author;
-    }
-
-    public String getCover() {
-        return cover;
-    }
-
-    public String getCoverContent() {
-        return coverContent;
     }
 
     public void setId(Long id) {
         this.id = id;
     }
 
-    public void setPublicId(UUID publicId) {
-        this.publicId = publicId;
+    public UUID getPublicId() {
+        return publicId;
+    }
+
+    public void setPublicId(UUID publidId) {
+        this.publicId = publidId;
+    }
+
+    public String getTitle() {
+        return title;
     }
 
     public void setTitle(String title) {
         this.title = title;
     }
 
+    public String getAuthor() {
+        return author;
+    }
+
     public void setAuthor(String author) {
         this.author = author;
     }
 
-    public void setCover(String cover) {
+    public byte[] getCover() {
+        return cover;
+    }
+
+    public void setCover(byte[] cover) {
         this.cover = cover;
     }
 
-    public void setCoverContent(String coverContent) {
-        this.coverContent = coverContent;
+    public String getCoverContentType() {
+        return coverContentType;
+    }
+
+    public void setCoverContentType(String coverContentType) {
+        this.coverContentType = coverContentType;
     }
 }

@@ -16,7 +16,7 @@ public class ReadSongInfoDTO {
     private byte[] cover;
 
     @NotNull
-    private String coverContentString;
+    private String coverContentType;
 
     @NotNull
     private boolean isFavorite;
@@ -24,52 +24,51 @@ public class ReadSongInfoDTO {
     @NotNull
     private UUID publicId;
 
-    public UUID getPublicId() {
-        return publicId;
-    }
-
     public SongTitleVO getTitle() {
         return title;
-    }
-
-    public SongAuthorVO getAuthor() {
-        return author;
-    }
-
-    public byte[] getCover() {
-        return cover;
-    }
-
-    public String getCoverContentString() {
-        return coverContentString;
-    }
-
-    public boolean isFavorite() {
-        return isFavorite;
-    }
-
-    public void setPublicId(UUID publicId) {
-        this.publicId = publicId;
     }
 
     public void setTitle(SongTitleVO title) {
         this.title = title;
     }
 
+    public SongAuthorVO getAuthor() {
+        return author;
+    }
+
     public void setAuthor(SongAuthorVO author) {
         this.author = author;
+    }
+
+    public byte[] getCover() {
+        return cover;
     }
 
     public void setCover(byte[] cover) {
         this.cover = cover;
     }
 
-    public void setCoverContentString(String coverContentString) {
-        this.coverContentString = coverContentString;
+    public String getCoverContentType() {
+        return coverContentType;
     }
 
-    public void setFavorite(boolean isFavorite) {
-        this.isFavorite = isFavorite;
+    public void setCoverContentType(String coverContentType) {
+        this.coverContentType = coverContentType;
     }
 
+    public boolean isFavorite() {
+        return isFavorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        isFavorite = favorite;
+    }
+
+    public UUID getPublicId() {
+        return publicId;
+    }
+
+    public void setPublicId(UUID publicId) {
+        this.publicId = publicId;
+    }
 }
