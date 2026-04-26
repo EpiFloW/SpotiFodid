@@ -14,6 +14,7 @@ spring:
     url: jdbc:postgresql://localhost:5432/postgres?currentSchema=spotifodid
     username: postgres
     password: 
+    driver-class-name: org.postgresql.Driver
     hikari:
       poolName: Hikari
       auto-commit: false
@@ -39,6 +40,7 @@ spring:
       enabled: true
       max-file-size: 100MB
       max-request-size: 100MB
+      
   security:
       oauth2:
         client:

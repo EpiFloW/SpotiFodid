@@ -27,9 +27,10 @@ public class AuthResource {
 
     private final ClientRegistration registration;
 
+
     public AuthResource(UserService userService, ClientRegistrationRepository registrations) {
         this.userService = userService;
-        this.registration = registrations.findByRegistrationId("okta");
+        this.registration = registrations.findByRegistrationId("auth0");
     }
 
     @GetMapping("/get-authenticated-user")
@@ -52,5 +53,4 @@ public class AuthResource {
         request.getSession().invalidate();
         return ResponseEntity.ok().body(Map.of("logoutUrl", logoutUrl));
     }
-
 }

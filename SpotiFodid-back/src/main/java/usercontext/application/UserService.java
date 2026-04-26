@@ -33,7 +33,7 @@ public class UserService {
             if (attributes.get("updated_at") != null) {
                 Instant dbLastModifiedDate = existingUser.orElseThrow().getLastModifiedDate();
                 Instant idpModifiedDate;
-                if(attributes.get("updated_at") instanceof Instant) {
+                if (attributes.get("updated_at") instanceof Instant) {
                     idpModifiedDate = (Instant) attributes.get("updated_at");
                 } else {
                     idpModifiedDate = Instant.ofEpochSecond((Integer) attributes.get("updated_at"));
@@ -64,7 +64,6 @@ public class UserService {
             userRepository.saveAndFlush(userToUpdate);
         }
     }
-    
 
     private User mapOauth2AttributesToUser(Map<String, Object> attributes) {
         User user = new User();
