@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, EventEmitter, input, Output } from '@angular/core';
 import { ReadSong } from '../../service/model/song.model';
 
 @Component({
@@ -10,4 +10,11 @@ import { ReadSong } from '../../service/model/song.model';
 export class SmallSongCard {
   
   song = input.required<ReadSong>();
+
+  @Output()
+  songToPlay$ = new EventEmitter<ReadSong>();
+
+  play(): void {
+    this.songToPlay$.next(this.song())
+  }
 }
