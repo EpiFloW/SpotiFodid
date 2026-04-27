@@ -5,15 +5,19 @@ import {tap} from "rxjs";
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(Auth);
-  return next(req).pipe(
+
+  const authReq = req.clone({
+    withCredentials: true
+  });
+
+  return next(authReq).pipe(
     tap({
       error: (err: HttpErrorResponse) => {
-        if (err.status === 401 && err.url && err.url.includes('api/get-authenticated-user')
-          && authService.isAuthenticated()) {
-          authService.login();
-        } else if (err.url && ((req.method !== 'GET' && !err.url.endsWith('/api/songs'))
-          || (err.url && !err.url.endsWith('api/get-authenticated-user')) && !authService.isAuthenticated())) {
-          authService.openOrCloseAuthPopup("OPEN");
+        if (err.status === 401) {
+          if (err.url?.includes('api/get-authenticated-user')) {
+          } else {
+             authService.openOrCloseAuthPopup("OPEN");
+          }
         }
       }
     })

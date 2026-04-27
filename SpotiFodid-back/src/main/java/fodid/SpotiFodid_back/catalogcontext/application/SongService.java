@@ -3,6 +3,7 @@ package fodid.SpotiFodid_back.catalogcontext.application;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -66,5 +67,13 @@ public class SongService {
     public Optional<SongContentDTO> getOneByPublicId(UUID publicId) {
         Optional<SongContent> songByPublicId = songContentRepository.findOneBySongPublicId(publicId);
         return songByPublicId.map(songContentMapper::songContentToSongContentDTO);
+    }
+
+    public List<ReadSongInfoDTO> search(String searchTerm) {
+        List<ReadSongInfoDTO> searchedSongs = songRepository.findByTitleOrAuthorContaining(searchTerm)
+                .stream()
+                .map(songMapper::songToReadSongInfoDTO)
+                .collect(Collectors.toList());
+            return searchedSongs;
     }
 }

@@ -20,7 +20,7 @@ export class Library implements OnInit {
 
   songs: Array<ReadSong> = [];
 
-  isLoading = false;
+  isLoading : boolean = false;
 
   constructor() {
     effect(() => {

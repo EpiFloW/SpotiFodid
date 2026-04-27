@@ -19,7 +19,7 @@ export class Home {
 
   allSongs: Array<ReadSong> | undefined;
 
-  isLoading = false;
+  isLoading : boolean = false;
 
   constructor() {
     this.isLoading = true;
