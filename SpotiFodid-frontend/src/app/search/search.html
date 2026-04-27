@@ -4,25 +4,40 @@
   </span>
   <input [ngModel]="searchTerm" (ngModelChange)="onSearch($event)" name="search"
          class="border-0 rounded-end-5 form-control me-2 search-input ps-2"
-         type="search" placeholder="What do you want to listen to?" aria-label="Search"/>
+         type="search" placeholder="Search on Spotify & YouTube..." aria-label="Search"/>
 </div>
+
 <div class="pt-3">
   @if (isSearching) {
     <div class="d-flex justify-content-center mt-5 h-100">
-      <div class="spinner-grow text-primary loader">
-        <span class="visually-hidden">Loading...</span>
-      </div>
-    </div>
-  } @else if (searchTerm.length >= 1 && songsResult.length === 0) {
-    <div class="d-flex justify-content-center h-100">
-      <div>No results for this search :(</div>
+      <div class="spinner-grow text-primary loader"></div>
     </div>
   } @else {
-    @for (song of songsResult; track song.publicId) {
-      <div class="song-card-background w-100 mb-2 p-2 pe-3 d-flex align-items-center">
-        <app-small-song-card class="w-100" [song]="song" (songToPlay$)="onPlay($event)" />
-        <app-favorite-song-btn [song]="song"/>
-      </div>
+    @if (songsResult.length > 0) {
+        <h5 class="text-white mt-3">Local Songs</h5>
+        @for (song of songsResult; track song.publicId) {
+          <div class="song-card-background w-100 mb-2 p-2 pe-3 d-flex align-items-center">
+            <app-small-song-card class="w-100" [song]="song" (songToPlay$)="onPlay($event)" />
+            <app-favorite-song-btn [song]="song"/>
+          </div>
+        }
+    }
+
+    @if (youtubeResults.length > 0) {
+        <h5 class="text-white mt-4">YouTube Music</h5>
+        @for (video of youtubeResults; track video.videoId) {
+          <div class="song-card-background w-100 mb-2 p-2 d-flex align-items-center" (click)="onPlayYouTube(video)">
+             <img [src]="video.thumbnailUrl" class="rounded-2" width="55" height="55">
+             <div class="ms-3">
+                 <div class="text-white">{{ video.title }}</div>
+                 <small class="text-secondary">YouTube Stream</small>
+             </div>
+          </div>
+        }
+    }
+
+    @if (searchTerm.length >= 1 && songsResult.length === 0 && youtubeResults.length === 0) {
+        <div class="d-flex justify-content-center mt-5">No results found :(</div>
     }
   }
 </div>

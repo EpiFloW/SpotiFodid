@@ -11,6 +11,10 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {State} from "../service/model/state.model";
 import { FavoriteSongBtn } from '../shared/favorite-song-btn/favorite-song-btn';
 
+import { forkJoin } from 'rxjs';
+import { YouTubeVideo } from '../service/model/youtubeVideo.model';
+
+
 @Component({
   selector: 'app-search',
   imports: [
@@ -23,7 +27,8 @@ import { FavoriteSongBtn } from '../shared/favorite-song-btn/favorite-song-btn';
   styleUrl: './search.scss',
 })
 export class Search {
-  searchTerm = '';
+    youtubeResults: Array<YouTubeVideo> = [];
+    searchTerm = '';
 
     private songService = inject(SongService);
     private songContentService = inject(SongContentService);
@@ -35,16 +40,46 @@ export class Search {
 
     onSearch(newSearchTerm: string) {
         this.searchTerm = newSearchTerm;
-        of(newSearchTerm).pipe(
-            tap(newSearchTerm => this.resetResultIfEmptyTerm(newSearchTerm)),
-            filter(newSearchTerm => newSearchTerm.length > 0),
-            debounce(() => interval(300)),
-            tap(() => this.isSearching = true),
-            switchMap(newSearchTerm => this.songService.search(newSearchTerm))
-        ).subscribe({
-            next: searchState => this.onNext(searchState)
-        })
+        if (newSearchTerm.length === 0) {
+            this.songsResult = [];
+            this.youtubeResults = [];
+            return;
     }
+    of(newSearchTerm).pipe(
+        debounce(() => interval(300)),
+        tap(() => this.isSearching = true),
+        switchMap(term => forkJoin({
+            local: this.songService.search(term),
+            youtube: this.songService.searchYouTube(term) 
+        }))
+    ).subscribe({
+        next: (res) => {
+            this.isSearching = false;
+            if (res.local.status === "OK") this.songsResult = res.local.value!;
+            this.youtubeResults = res.youtube;
+        },
+        error: () => {
+            this.isSearching = false;
+            this.toastService.show('Error during search', "DANGER");
+        }
+    });
+}
+
+onPlayYouTube(video: YouTubeVideo) {
+    const youtubeSong: ReadSong = {
+        publicId: video.videoId,
+        title: { value: video.title },
+        author: { value: "YouTube Music" },
+        favorite: false,
+        displayPlay: true,
+        youtubeVideoId: video.videoId,
+        cover: video.thumbnailUrl, 
+        coverContentType: 'image/jpeg',
+        file: null,
+        fileContentType: null
+    };
+    this.songContentService.createNewQueue(youtubeSong, [youtubeSong]);
+}
 
     private resetResultIfEmptyTerm(newSearchTerm: string) {
         if (newSearchTerm.length === 0) {

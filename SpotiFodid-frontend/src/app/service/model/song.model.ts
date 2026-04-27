@@ -24,9 +24,12 @@ export interface ReadSong extends SongBase {
   coverContentType?: string;
   favorite: boolean;
   displayPlay: boolean;
+  file?: string | null;            
+  fileContentType?: string | null; 
+  youtubeVideoId?: string | null;
 }
 
 export interface SongContent extends ReadSong {
-  file?: string;
-  fileContentType?: string;
+  file?: string | null;
+  fileContentType?: string | null;
 }

@@ -9,6 +9,8 @@ spring:
     active: dev
   application:
     name: spotifodid
+    youtube:
+      api-key: ${YOUTUBE_KEY}
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     url: jdbc:postgresql://localhost:5432/postgres?currentSchema=spotifodid

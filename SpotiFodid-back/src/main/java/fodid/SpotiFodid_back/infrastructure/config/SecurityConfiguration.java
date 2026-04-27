@@ -28,6 +28,7 @@ public class SecurityConfiguration {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/get-authenticated-user").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/songs/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/youtube/**").permitAll()
                 .anyRequest().authenticated()
             )
             

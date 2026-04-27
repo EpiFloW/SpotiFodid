@@ -3,8 +3,9 @@ import {HttpClient, HttpErrorResponse, HttpParams} from "@angular/common/http";
 import {ReadSong, SaveSong} from "./model/song.model";
 import {State} from "./model/state.model";
 import {environment} from "../../environments/environment";
-import {catchError, map, Observable, of} from "rxjs";
+import {catchError, map, Observable, of, tap} from "rxjs";
 import {Toast} from "./toast";
+import { YouTubeVideo } from './model/youtubeVideo.model';
 
 @Injectable({
   providedIn: 'root',
@@ -94,5 +95,12 @@ export class SongService {
         error: err => this.fetchFavoriteSong$
           .set(State.Builder<Array<ReadSong>, HttpErrorResponse>().forError(err).build())
       })
+  }
+
+  searchYouTube(query: string): Observable<Array<YouTubeVideo>> {
+    const params = new HttpParams().set('q', query);
+    return this.http.get<Array<YouTubeVideo>>(`${environment.API_URL}/api/youtube/search`, { params }).pipe(
+        tap(videos => console.log('Vidéos reçues de YouTube:', videos))
+    );
   }
 }
