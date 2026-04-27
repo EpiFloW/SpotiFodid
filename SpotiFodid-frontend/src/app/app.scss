@@ -1,11 +1,11 @@
-@use "../assets/scss/bootstrap-variables" as vars;
+@import "./../assets/scss/bootstrap-variables";
 
 .height-main-row {
-  height: vars.$main-row-height;
+  height: $main-row-height;
 }
 
 .full-height-main-content {
-  height: vars.$main-content-height;
+  height: $main-content-height;
 }
 
 .toast-container {

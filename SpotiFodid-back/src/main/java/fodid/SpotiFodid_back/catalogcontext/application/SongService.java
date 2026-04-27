@@ -8,15 +8,22 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import fodid.SpotiFodid_back.catalogcontext.application.dto.FavoriteSongDTO;
 import fodid.SpotiFodid_back.catalogcontext.application.dto.ReadSongInfoDTO;
 import fodid.SpotiFodid_back.catalogcontext.application.dto.SaveSongDTO;
 import fodid.SpotiFodid_back.catalogcontext.application.dto.SongContentDTO;
 import fodid.SpotiFodid_back.catalogcontext.application.mapper.SongContentMapper;
 import fodid.SpotiFodid_back.catalogcontext.application.mapper.SongMapper;
+import fodid.SpotiFodid_back.catalogcontext.domain.Favorite;
+import fodid.SpotiFodid_back.catalogcontext.domain.FavoriteId;
 import fodid.SpotiFodid_back.catalogcontext.domain.Song;
 import fodid.SpotiFodid_back.catalogcontext.domain.SongContent;
+import fodid.SpotiFodid_back.catalogcontext.repository.FavoriteRepository;
 import fodid.SpotiFodid_back.catalogcontext.repository.SongContentRepository;
 import fodid.SpotiFodid_back.catalogcontext.repository.SongRepository;
+import fodid.SpotiFodid_back.infrastructure.config.service.dto.State;
+import fodid.SpotiFodid_back.infrastructure.config.service.dto.StateBuilder;
+import usercontext.ReadUserDTO;
 import usercontext.application.UserService;
 
 @Service
@@ -33,13 +40,17 @@ public class SongService {
 
     private final UserService userService;
 
+    private final FavoriteRepository favoriteRepository;
+
     public SongService(SongMapper songMapper, SongRepository songRepository,
-                       SongContentRepository songContentRepository, SongContentMapper songContentMapper, UserService userService) {
+                       SongContentRepository songContentRepository, SongContentMapper songContentMapper,
+                       UserService userService, FavoriteRepository favoriteRepository) {
         this.songMapper = songMapper;
         this.songRepository = songRepository;
         this.songContentRepository = songContentRepository;
         this.songContentMapper = songContentMapper;
         this.userService = userService;
+        this.favoriteRepository = favoriteRepository;
     }
 
     public ReadSongInfoDTO create(SaveSongDTO saveSongDTO) {
@@ -61,6 +72,10 @@ public class SongService {
                 .map(songMapper::songToReadSongInfoDTO)
                 .toList();
 
+        if(userService.isAuthenticated()) {
+            return fetchFavoritesStatusForSongs(allSongs);
+        }
+
         return allSongs;
     }
 
@@ -75,5 +90,52 @@ public class SongService {
                 .map(songMapper::songToReadSongInfoDTO)
                 .collect(Collectors.toList());
             return searchedSongs;
+    }
+
+    public State<FavoriteSongDTO, String> addOrRemoveFromFavorite(FavoriteSongDTO favoriteSongDTO, String email) {
+        StateBuilder<FavoriteSongDTO, String> builder = State.builder();
+        Optional<Song> songToLikeOpt = songRepository.findOneByPublicId(favoriteSongDTO.publicId());
+        if (songToLikeOpt.isEmpty()) {
+            return builder.forError("Song public id doesn't exist").build();
+        }
+
+        Song songToLike = songToLikeOpt.get();
+
+        ReadUserDTO userWhoLikedSong = userService.getByEmail(email).orElseThrow();
+
+        if (favoriteSongDTO.favorite()) {
+            Favorite favorite = new Favorite();
+            favorite.setSongPublicId(songToLike.getPublicId());
+            favorite.setUserEmail(userWhoLikedSong.email());
+            favoriteRepository.save(favorite);
+        } else {
+            FavoriteId favoriteId = new FavoriteId(songToLike.getPublicId(), userWhoLikedSong.email());
+            favoriteRepository.deleteById(favoriteId);
+            favoriteSongDTO = new FavoriteSongDTO(false, songToLike.getPublicId());
+        }
+
+        return builder.forSuccess(favoriteSongDTO).build();
+    }
+
+    public List<ReadSongInfoDTO> fetchFavoriteSongs(String email) {
+        return songRepository.findAllFavoriteByUserEmail(email)
+                .stream()
+                .map(songMapper::songToReadSongInfoDTO)
+                .toList();
+    }
+
+    private List<ReadSongInfoDTO> fetchFavoritesStatusForSongs(List<ReadSongInfoDTO> songs) {
+        ReadUserDTO authenticatedUser = userService.getAuthenticatedUserFromSecurityContext();
+
+        List<UUID> songPublicIds = songs.stream().map(ReadSongInfoDTO::getPublicId).toList();
+
+        List<UUID> userFavoriteSongs = favoriteRepository.findAllByUserEmailAndSongPublicIdIn(authenticatedUser.email(), songPublicIds)
+                .stream().map(Favorite::getSongPublicId).toList();
+
+        return songs.stream().peek(song -> {
+            if (userFavoriteSongs.contains(song.getPublicId())) {
+                song.setFavorite(true);
+            }
+        }).toList();
     }
 }

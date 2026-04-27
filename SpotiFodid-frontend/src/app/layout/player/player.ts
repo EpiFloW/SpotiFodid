@@ -5,6 +5,7 @@ import {SongContentService} from "../../service/song-content.service";
 import {ReadSong, SongContent} from "../../service/model/song.model";
 import {Howl} from "howler";
 import { SmallSongCard } from '../../shared/small-song-card/small-song-card';
+import { FavoriteSongBtn } from '../../shared/favorite-song-btn/favorite-song-btn';
 
 @Component({
   selector: 'app-player',
@@ -12,6 +13,7 @@ import { SmallSongCard } from '../../shared/small-song-card/small-song-card';
     FontAwesomeModule,
     FormsModule,
     SmallSongCard,
+    FavoriteSongBtn
   ],
   templateUrl: './player.html',
   styleUrl: './player.scss',

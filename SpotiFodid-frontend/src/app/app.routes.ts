@@ -1,12 +1,9 @@
 import { Routes } from '@angular/router';
-import { AddSongComponent } from './add-song/add-song.component';
-import { Search } from './search/search';
-import { Home } from './home/home';
 
 export const routes: Routes = [
     {
         path: '',
-        component: Home
+        loadComponent: () => import('./home/home').then(m => m.Home)
     },
     {
         path: 'add-song',
@@ -16,4 +13,8 @@ export const routes: Routes = [
         path: 'search',
         loadComponent: () => import('./search/search').then(m => m.Search)
     },
+    {
+        path: 'favorites',
+        loadComponent: () => import('./favorite/favorite').then(m => m.Favorite)
+    }
 ];

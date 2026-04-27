@@ -9,13 +9,15 @@ import {ReadSong} from "../service/model/song.model";
 import {debounce, filter, interval, of, switchMap, tap} from "rxjs";
 import {HttpErrorResponse} from "@angular/common/http";
 import {State} from "../service/model/state.model";
+import { FavoriteSongBtn } from '../shared/favorite-song-btn/favorite-song-btn';
 
 @Component({
   selector: 'app-search',
   imports: [
         FormsModule,
         FontAwesomeModule,
-        SmallSongCard
+        SmallSongCard,
+        FavoriteSongBtn
   ],
   templateUrl: './search.html',
   styleUrl: './search.scss',
